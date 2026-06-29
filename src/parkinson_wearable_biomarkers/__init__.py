@@ -16,6 +16,14 @@ from parkinson_wearable_biomarkers.preprocessing import (
     WindowingError,
     create_windows,
 )
+from parkinson_wearable_biomarkers.validation import (
+    SubjectFold,
+    SubjectLeakageError,
+    SubjectSplitError,
+    assert_no_subject_leakage,
+    group_k_fold_splits,
+    leave_one_subject_out_splits,
+)
 
 __all__ = [
     "DataSchema",
@@ -23,9 +31,15 @@ __all__ = [
     "FeatureDataset",
     "FeatureExtractionError",
     "SensorDataset",
+    "SubjectFold",
+    "SubjectLeakageError",
+    "SubjectSplitError",
     "WindowedDataset",
     "WindowingError",
+    "assert_no_subject_leakage",
     "create_windows",
     "extract_features",
+    "group_k_fold_splits",
+    "leave_one_subject_out_splits",
     "load_csv",
 ]
