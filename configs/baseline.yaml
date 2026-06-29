@@ -1,0 +1,34 @@
+project:
+  random_seed: 42
+
+data:
+  subject_id_column: subject_id
+  label_column: label
+  accelerometer_columns:
+    - acc_x
+    - acc_y
+    - acc_z
+  allowed_labels:
+    - 0
+    - 1
+  sampling_rate_hz: 100
+
+windowing:
+  window_size_seconds: 2.0
+  overlap_fraction: 0.5
+
+features:
+  include_axis_statistics: true
+  include_magnitude_statistics: true
+  include_energy: true
+  include_dominant_frequency: true
+  rolling_variance_window: 3
+
+validation:
+  strategy: group_k_fold
+  n_splits: 5
+
+model:
+  name: logistic_regression
+  class_weight: balanced
+  random_state: 42
