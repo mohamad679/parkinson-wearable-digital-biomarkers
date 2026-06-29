@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+
+# Virtual environment
+.venv/
+
+# Data
+data/raw/
+data/processed/
+
+# Results that may be regenerated
+results/figures/
+results/*.json
+
+# OS / editor
+.DS_Store
+.vscode/

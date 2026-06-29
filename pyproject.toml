@@ -1,0 +1,23 @@
+[project]
+name = "parkinson-wearable-digital-biomarkers"
+version = "0.1.0"
+description = "Subject-aware baseline pipeline for Parkinson's freezing-of-gait detection from wearable accelerometer signals."
+readme = "README.md"
+requires-python = ">=3.11"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+addopts = "-ra"
+
+[tool.ruff]
+target-version = "py311"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]
+ignore = []
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
