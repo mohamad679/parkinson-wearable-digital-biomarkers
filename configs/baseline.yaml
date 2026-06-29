@@ -22,6 +22,7 @@ features:
   include_magnitude_statistics: true
   include_energy: true
   include_dominant_frequency: true
+  rolling_variance_window: 3
 
 validation:
   strategy: group_k_fold

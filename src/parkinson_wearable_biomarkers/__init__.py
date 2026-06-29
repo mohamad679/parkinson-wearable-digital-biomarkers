@@ -6,6 +6,11 @@ from parkinson_wearable_biomarkers.data import (
     SensorDataset,
     load_csv,
 )
+from parkinson_wearable_biomarkers.features import (
+    FeatureDataset,
+    FeatureExtractionError,
+    extract_features,
+)
 from parkinson_wearable_biomarkers.preprocessing import (
     WindowedDataset,
     WindowingError,
@@ -15,9 +20,12 @@ from parkinson_wearable_biomarkers.preprocessing import (
 __all__ = [
     "DataSchema",
     "DataValidationError",
+    "FeatureDataset",
+    "FeatureExtractionError",
     "SensorDataset",
     "WindowedDataset",
     "WindowingError",
     "create_windows",
+    "extract_features",
     "load_csv",
 ]
