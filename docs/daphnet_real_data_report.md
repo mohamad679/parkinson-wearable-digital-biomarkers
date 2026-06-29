@@ -145,7 +145,13 @@ python scripts/run_baselines.py \
   --window-size 128 \
   --overlap 0.5 \
   --folds 3 \
-  --thresholds 0.3 0.5 0.7
+  --thresholds 0.3 0.5 0.7 \
+  --calibration-bins 5 \
+  --random-seed 42
+
+python scripts/make_figures.py \
+  --input results/daphnet_trunk_benchmark.json \
+  --output results/figures/daphnet_trunk_benchmark.svg
 ```
 
 The raw archive, extracted recordings, converted CSV, benchmark JSON, and generated
