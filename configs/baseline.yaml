@@ -8,6 +8,9 @@ data:
     - acc_x
     - acc_y
     - acc_z
+  allowed_labels:
+    - 0
+    - 1
   sampling_rate_hz: 100
 
 windowing:
