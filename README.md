@@ -128,6 +128,31 @@ Use `python scripts/<script>.py --help` for all available options. The values in
 CLI receives its settings through explicit arguments and does not automatically load
 that YAML file.
 
+## Real-data Daphnet Benchmark
+
+A preliminary trunk/hip-sensor benchmark is documented in
+[docs/daphnet_real_data_report.md](docs/daphnet_real_data_report.md). It is a
+research-only reproducibility result, not clinical evidence or a clinically validated
+FoG detector.
+
+After manually downloading Daphnet, keep its ZIP or extracted directory under the
+ignored `data/raw/` path. Convert it locally with:
+
+```bash
+python scripts/prepare_daphnet.py \
+  --input data/raw/daphnet.zip \
+  --output data/processed/daphnet_trunk.csv \
+  --sensor trunk
+```
+
+The converter also accepts `--sensor ankle` and `--sensor thigh`. It excludes annotation
+`0`, maps annotation `1` to project label `0`, maps annotation `2` to project label `1`,
+and derives subject IDs from recording names. It requires no internet access.
+
+Raw Daphnet files, extracted recordings, converted CSV data, benchmark JSON, and
+regenerable `results/figures/` outputs are ignored and must not be committed. The linked
+report and its aggregate-only SVG contain no raw or participant-level sensor data.
+
 ## Subject-Aware Validation
 
 The main validation strategy is deterministic GroupKFold-style splitting by subject.
@@ -185,6 +210,7 @@ analysis, longitudinal reliability, and assessment in the intended context of us
 │   └── baseline.yaml                 # Reference baseline settings
 ├── scripts/
 │   ├── prepare_data.py               # Deterministic synthetic CSV generator
+│   ├── prepare_daphnet.py             # Local Daphnet directory/ZIP converter
 │   ├── run_baselines.py              # End-to-end subject-aware benchmark
 │   ├── make_figures.py               # Reproducible benchmark SVG
 │   └── smoke_test.py                 # Temporary end-to-end CLI check
@@ -197,6 +223,7 @@ analysis, longitudinal reliability, and assessment in the intended context of us
 │   ├── evaluate.py                   # Discrimination and threshold metrics
 │   └── calibration.py                # Brier, ECE, and calibration curves
 ├── tests/                             # Synthetic unit and integration tests
+├── docs/                              # Cautious publishable aggregate reports
 ├── results/
 │   └── benchmark_report.md           # Reusable reporting template
 ├── MODEL_CARD.md                     # Intended use and model limitations
