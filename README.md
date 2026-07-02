@@ -130,10 +130,17 @@ that YAML file.
 
 ## Real-data Daphnet Benchmark
 
-A preliminary trunk/hip-sensor benchmark is documented in
-[docs/daphnet_real_data_report.md](docs/daphnet_real_data_report.md). It is a
-research-only reproducibility result, not clinical evidence or a clinically validated
-FoG detector.
+Four research-only, non-clinical reports document the preliminary trunk/hip-sensor results:
+
+| Report | Contents |
+|---|---|
+| [docs/daphnet_real_data_report.md](docs/daphnet_real_data_report.md) | Original 3-fold GroupKFold point estimate (reference baseline) |
+| [docs/daphnet_loso_report.md](docs/daphnet_loso_report.md) | Leave-One-Subject-Out breakdown — mean ± std across 10 subjects |
+| [docs/daphnet_permutation_report.md](docs/daphnet_permutation_report.md) | Within-subject permutation test — empirical p-value for the observed AUROC |
+| [docs/daphnet_leakage_ablation.md](docs/daphnet_leakage_ablation.md) | Leaky vs. honest split ablation — measured AUROC inflation from naive splitting |
+
+All four are research-only reproducibility results, not clinical evidence or clinically
+validated FoG detectors.
 
 After manually downloading Daphnet, keep its ZIP or extracted directory under the
 ignored `data/raw/` path. Convert it locally with:
@@ -151,7 +158,7 @@ and derives subject IDs from recording names. It requires no internet access.
 
 Raw Daphnet files, extracted recordings, converted CSV data, benchmark JSON, and
 regenerable `results/figures/` outputs are ignored and must not be committed. The linked
-report and its aggregate-only SVG contain no raw or participant-level sensor data.
+reports and their aggregate-only SVGs contain no raw or participant-level sensor data.
 
 ## Subject-Aware Validation
 
@@ -167,9 +174,11 @@ generalizes to a new person.
 
 > **Subject-leakage warning:** Never randomly split windows from the same subjects into
 > both training and test sets for the main evaluation. That design leaks subject-specific
-> information and can substantially overstate generalization. Keep preprocessing,
-> feature selection, threshold selection, and calibration fitting inside the training
-> side of each subject-aware fold when extending this baseline.
+> information and can substantially overstate generalization. See
+> [docs/daphnet_leakage_ablation.md](docs/daphnet_leakage_ablation.md) for a measured
+> demonstration of this effect. Keep preprocessing, feature selection, threshold
+> selection, and calibration fitting inside the training side of each subject-aware fold
+> when extending this baseline.
 
 ## Metrics, Imbalance, and Calibration
 
@@ -213,7 +222,12 @@ analysis, longitudinal reliability, and assessment in the intended context of us
 │   ├── prepare_daphnet.py             # Local Daphnet directory/ZIP converter
 │   ├── run_baselines.py              # End-to-end subject-aware benchmark
 │   ├── make_figures.py               # Reproducible benchmark SVG
-│   └── smoke_test.py                 # Temporary end-to-end CLI check
+│   ├── make_loso_figure.py           # Per-subject AUROC dot-plot SVG
+│   ├── permutation_test.py           # Within-subject permutation significance test
+│   ├── make_permutation_figure.py    # Null-distribution histogram SVG
+│   ├── smoke_test.py                 # Temporary end-to-end CLI check
+│   └── diagnostics/
+│       └── leaky_split_ablation.py   # DIAGNOSTIC ONLY — leakage demonstration
 ├── src/parkinson_wearable_biomarkers/
 │   ├── data.py                       # CSV schema and loading
 │   ├── preprocessing.py              # Subject-safe windowing
@@ -223,7 +237,11 @@ analysis, longitudinal reliability, and assessment in the intended context of us
 │   ├── evaluate.py                   # Discrimination and threshold metrics
 │   └── calibration.py                # Brier, ECE, and calibration curves
 ├── tests/                             # Synthetic unit and integration tests
-├── docs/                              # Cautious publishable aggregate reports
+├── docs/
+│   ├── daphnet_real_data_report.md   # 3-fold GroupKFold reference estimate
+│   ├── daphnet_loso_report.md        # LOSO per-subject breakdown
+│   ├── daphnet_permutation_report.md # Permutation significance test
+│   └── daphnet_leakage_ablation.md   # Leaky vs. honest split ablation
 ├── results/
 │   └── benchmark_report.md           # Reusable reporting template
 ├── MODEL_CARD.md                     # Intended use and model limitations

@@ -267,6 +267,51 @@ def _confusion_matrix(
     )
 
 
+def aggregate_fold_metrics(
+    per_fold: list[dict[str, object]],
+) -> dict[str, object]:
+    """Return mean, std, and n_folds aggregated over per-fold metric dicts.
+
+    Only keys whose values are finite real numbers in *every* fold are
+    aggregated.  Keys with non-numeric or missing values are skipped.
+    The returned dict has keys ``<key>_mean`` and ``<key>_std`` for each
+    aggregated key, plus ``n_folds``.
+
+    Parameters
+    ----------
+    per_fold:
+        List of per-fold metric dicts, each produced by one LOSO or
+        GroupKFold test fold.  Must not be empty.
+
+    Raises
+    ------
+    MetricInputError
+        If *per_fold* is empty.
+    """
+    if not per_fold:
+        raise MetricInputError("per_fold must contain at least one fold")
+
+    numeric_keys: list[str] = []
+    for key in per_fold[0]:
+        if all(
+            isinstance(fold.get(key), int | float)
+            and not isinstance(fold.get(key), bool)
+            and math.isfinite(float(fold[key]))  # type: ignore[arg-type]
+            for fold in per_fold
+        ):
+            numeric_keys.append(key)
+
+    result: dict[str, object] = {"n_folds": len(per_fold)}
+    for key in numeric_keys:
+        values = [float(fold[key]) for fold in per_fold]  # type: ignore[arg-type]
+        n = len(values)
+        mean = math.fsum(values) / n
+        variance = math.fsum((v - mean) ** 2 for v in values) / n
+        result[f"{key}_mean"] = mean
+        result[f"{key}_std"] = math.sqrt(variance)
+    return result
+
+
 def _validate_binary_inputs(
     labels: Sequence[int], probabilities: Sequence[float]
 ) -> tuple[tuple[int, ...], tuple[float, ...]]:
