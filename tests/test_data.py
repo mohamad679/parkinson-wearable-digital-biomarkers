@@ -1,6 +1,7 @@
 import csv
 
 import pytest
+
 from parkinson_wearable_biomarkers.data import (
     DataSchema,
     DataValidationError,

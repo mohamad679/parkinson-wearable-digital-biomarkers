@@ -299,7 +299,6 @@ def test_permutation_within_subject_shuffle_preserves_class_counts():
     import random as _random
 
     from parkinson_wearable_biomarkers.features import FeatureDataset
-
     from scripts.permutation_test import permute_labels_within_subjects
 
     # Build a tiny FeatureDataset with two subjects.

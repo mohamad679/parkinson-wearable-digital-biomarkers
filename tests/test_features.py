@@ -1,6 +1,7 @@
 import math
 
 import pytest
+
 from parkinson_wearable_biomarkers.data import DataSchema
 from parkinson_wearable_biomarkers.features import FeatureExtractionError, extract_features
 from parkinson_wearable_biomarkers.preprocessing import WindowedDataset

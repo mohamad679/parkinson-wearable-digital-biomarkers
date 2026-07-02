@@ -1,4 +1,5 @@
 import pytest
+
 from parkinson_wearable_biomarkers.data import DataSchema, SensorDataset
 from parkinson_wearable_biomarkers.preprocessing import WindowingError, create_windows
 

@@ -1,6 +1,7 @@
 import math
 
 import pytest
+
 from parkinson_wearable_biomarkers.evaluate import (
     MetricInputError,
     auprc,

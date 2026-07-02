@@ -87,6 +87,8 @@ def run_leaky_ablation(
         Column names (must match the honest benchmark).
     """
     # Delay imports so this module can be imported without sklearn on path.
+    from sklearn.model_selection import StratifiedKFold  # noqa: PLC0415
+
     from parkinson_wearable_biomarkers.calibration import (  # noqa: PLC0415
         brier_score,
         expected_calibration_error,
@@ -99,7 +101,6 @@ def run_leaky_ablation(
         fit_random_forest,
     )
     from parkinson_wearable_biomarkers.preprocessing import create_windows  # noqa: PLC0415
-    from sklearn.model_selection import StratifiedKFold  # noqa: PLC0415
 
     schema = DataSchema(
         accelerometer_columns=accelerometer_columns,
