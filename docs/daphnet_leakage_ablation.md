@@ -44,17 +44,14 @@ task.
 
 ## Comparison Table
 
-<!-- PLACEHOLDER: run both pipelines (see Reproduction) and fill in the Leaky
-     rows and the Δ column before committing. Remove this comment. -->
-
 | Model | Split | AUROC | AUPRC | Brier | ECE |
 | --- | --- | ---: | ---: | ---: | ---: |
-| Logistic regression | Honest (subject-aware GroupKFold) | … | … | … | … |
-| Logistic regression | **Leaky (random StratifiedKFold)** | **…** | **…** | **…** | **…** |
-| Logistic regression | Inflation (Leaky − Honest) | **Δ …** | **Δ …** | — | — |
-| Random forest | Honest (subject-aware GroupKFold) | … | … | … | … |
-| Random forest | **Leaky (random StratifiedKFold)** | **…** | **…** | **…** | **…** |
-| Random forest | Inflation (Leaky − Honest) | **Δ …** | **Δ …** | — | — |
+| Logistic regression | Honest (subject-aware GroupKFold) | 0.7113 | 0.2412 | 0.2127 | 0.3171 |
+| Logistic regression | **Leaky (random StratifiedKFold)** | **0.7642** | **0.2486** | **0.2088** | **0.3275** |
+| Logistic regression | Inflation (Leaky − Honest) | **Δ +0.0529** | **Δ +0.0074** | — | — |
+| Random forest | Honest (subject-aware GroupKFold) | 0.7795 | 0.2280 | 0.0841 | 0.0333 |
+| Random forest | **Leaky (random StratifiedKFold)** | **0.9470** | **0.6887** | **0.0480** | **0.0158** |
+| Random forest | Inflation (Leaky − Honest) | **Δ +0.1675** | **Δ +0.4607** | — | — |
 
 _Honest numbers: 3-fold GroupKFold from `results/daphnet_trunk_benchmark.json`.
 Leaky numbers: StratifiedKFold from `results/daphnet_trunk_leaky_benchmark.json`
@@ -62,13 +59,11 @@ Leaky numbers: StratifiedKFold from `results/daphnet_trunk_leaky_benchmark.json`
 
 ## Interpretation
 
-<!-- PLACEHOLDER: replace this template with real values after running.
-
-RF's leaky AUROC of [LEAKY_RF] is [DELTA_RF] AUROC points above the honest
-estimate of [HONEST_RF]. Logistic regression shows a similar pattern
-([LEAKY_LR] vs [HONEST_LR], Δ = [DELTA_LR]). The inflated AUPRC change is
-even larger in relative terms ([LEAKY_AUPRC] vs [HONEST_AUPRC]) because AUPRC
-is more sensitive to memorisation of rare positive windows.
+RF's leaky AUROC of 0.9470 is 0.1675 AUROC points above the honest estimate of
+0.7795. Logistic regression shows a smaller but still meaningful pattern
+(0.7642 vs 0.7113, Δ = +0.0529). The AUPRC inflation is even more dramatic for
+RF: +0.4607 absolute (0.6887 vs 0.2280), because AUPRC is particularly
+sensitive to memorisation of the rare positive windows.
 
 The inflation arises because subject-specific gait signatures — physiology,
 sensor placement, movement artefacts, and recording conditions — are the same
@@ -81,7 +76,6 @@ These leaky numbers are presented only to make the magnitude of the bias
 concrete. They cannot be interpreted as evidence of clinical utility, and
 any researcher who uses a subject-unaware split on this or a similar dataset
 will produce results that are not reproducible in a new participant.
--->
 
 > **The leaky numbers above are shown only to demonstrate the risk of naive
 > splitting and must never be cited as this project's benchmark result.**

@@ -59,38 +59,45 @@ be reported across folds.
 
 ## Per-Subject Metrics — Random Forest
 
-<!-- PLACEHOLDER: run the pipeline (see Reproduction section) and fill in these
-     values before committing. Remove this comment when real numbers are added. -->
+> **Note on S04 and S10:** These subjects had zero annotated freeze windows
+> after windowing (n_positive = 0). AUROC is undefined with only one class
+> present; they are excluded from Mean ± SD.
 
 | Subject | n_windows | n_positive | AUROC | AUPRC | Brier | ECE |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| S01 | … | … | … | … | … | … |
-| S02 | … | … | … | … | … | … |
-| S03 | … | … | … | … | … | … |
-| S04 | … | … | … | … | … | … |
-| S05 | … | … | … | … | … | … |
-| S06 | … | … | … | … | … | … |
-| S07 | … | … | … | … | … | … |
-| S08 | … | … | … | … | … | … |
-| S09 | … | … | … | … | … | … |
-| S10 | … | … | … | … | … | … |
-| **Mean ± SD** | | | **… ± …** | **… ± …** | **… ± …** | **… ± …** |
+| S01 | 1,899 | 101 | 0.8164 | 0.3676 | 0.0494 | 0.0708 |
+| S02 | 1,414 | 181 | 0.8635 | 0.5531 | 0.0821 | 0.0204 |
+| S03 | 2,009 | 286 | 0.8607 | 0.4357 | 0.0941 | 0.0308 |
+| S04 | 2,069 | 0 | N/A | — | — | — |
+| S05 | 2,089 | 476 | 0.8500 | 0.5675 | 0.1592 | 0.1406 |
+| S06 | 1,989 | 133 | 0.7234 | 0.1519 | 0.0612 | 0.0192 |
+| S07 | 1,609 | 83 | 0.7282 | 0.1253 | 0.1021 | 0.1681 |
+| S08 | 769 | 204 | 0.5111 | 0.2730 | 0.2255 | 0.1481 |
+| S09 | 1,739 | 267 | 0.8641 | 0.5851 | 0.1178 | 0.1129 |
+| S10 | 2,229 | 0 | N/A | — | — | — |
+| **Mean ± SD** | | | **0.7772 ± 0.1224** | **0.3824 ± 0.1847** | **0.1114 ± 0.0573** | **0.0889 ± 0.0613** |
+
+_Mean ± SD over 8 evaluable folds; S04 and S10 excluded (zero positive windows)._
 
 ## Per-Subject Metrics — Logistic Regression
 
+> **Note on S04 and S10:** Same as above — excluded from Mean ± SD.
+
 | Subject | n_windows | n_positive | AUROC | AUPRC | Brier | ECE |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| S01 | … | … | … | … | … | … |
-| S02 | … | … | … | … | … | … |
-| S03 | … | … | … | … | … | … |
-| S04 | … | … | … | … | … | … |
-| S05 | … | … | … | … | … | … |
-| S06 | … | … | … | … | … | … |
-| S07 | … | … | … | … | … | … |
-| S08 | … | … | … | … | … | … |
-| S09 | … | … | … | … | … | … |
-| S10 | … | … | … | … | … | … |
-| **Mean ± SD** | | | **… ± …** | **… ± …** | **… ± …** | **… ± …** |
+| S01 | 1,899 | 101 | 0.7584 | 0.1691 | 0.2502 | 0.3785 |
+| S02 | 1,414 | 181 | 0.7674 | 0.2750 | 0.2190 | 0.2959 |
+| S03 | 2,009 | 286 | 0.8361 | 0.4116 | 0.2181 | 0.2988 |
+| S04 | 2,069 | 0 | N/A | — | — | — |
+| S05 | 2,089 | 476 | 0.8322 | 0.5032 | 0.1949 | 0.2011 |
+| S06 | 1,989 | 133 | 0.5060 | 0.0621 | 0.2652 | 0.4244 |
+| S07 | 1,609 | 83 | 0.7881 | 0.2232 | 0.2407 | 0.4401 |
+| S08 | 769 | 204 | 0.4282 | 0.2299 | 0.2293 | 0.1378 |
+| S09 | 1,739 | 267 | 0.9419 | 0.7118 | 0.0820 | 0.0826 |
+| S10 | 2,229 | 0 | N/A | — | — | — |
+| **Mean ± SD** | | | **0.7323 ± 0.1746** | **0.3232 ± 0.2085** | **0.2124 ± 0.0569** | **0.2824 ± 0.1321** |
+
+_Mean ± SD over 8 evaluable folds; S04 and S10 excluded (zero positive windows)._
 
 ## Per-Subject AUROC Figure
 
@@ -106,15 +113,22 @@ metrics and no participant-level or raw sensor information.
 
 ## Interpretation
 
-The LOSO breakdown exposes subject-to-subject variance that the pooled 3-fold
-estimate concealed. Some subjects may be substantially harder to classify than
-others, reflecting differences in freeze severity, gait style, or sensor
-placement.
+The LOSO breakdown reveals substantial inter-subject variance (RF AUROC range:
+0.5111–0.8641 across the 8 evaluable folds). Subject S08 shows the lowest
+discrimination (AUROC 0.5111, near-chance), while S09 achieves the highest
+(0.8641). The RF mean AUROC of 0.7772 ± 0.1224 is broadly consistent with the
+prior 3-fold grouped estimate (0.7795 pooled) but the per-subject spread —
+SD = 0.12 across only 8 subjects — cautions against treating the mean as a
+stable population estimate.
 
-These results are a reproducibility benchmark for two simple models on one
-trunk-only configuration. They are not clinical evidence. They do not establish
-diagnostic validity, reliable real-time FoG detection, patient benefit, safety,
-or suitability for clinical decision-making.
+Two subjects (S04 and S10) had zero annotated freeze windows after windowing
+with the chosen configuration and are excluded from Mean ± SD. This likely
+reflects sparsity in annotation rather than absence of FoG events.
+
+Logistic regression achieves a mean AUROC of 0.7323 ± 0.1746, slightly below RF
+but with larger variance and substantially worse calibration (ECE 0.2824 vs.
+0.0889 for RF). The difference in Brier score (LR: 0.2124, RF: 0.1114) further
+confirms that RF produces better-calibrated probability estimates for this task.
 
 ## Limitations
 
