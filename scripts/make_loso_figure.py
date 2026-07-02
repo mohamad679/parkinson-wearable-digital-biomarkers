@@ -125,7 +125,7 @@ def _render_svg(
     mean_color = "#dc2626"
     grid_color = "#e5e7eb"
     axis_color = "#374151"
-    label_font = "font-family='sans-serif' font-size='12' fill='#374151'"
+    label_font = "font-family='sans-serif' fill='#374151'"
     title_font = "font-family='sans-serif' font-size='17' font-weight='bold' fill='#111827'"
     note_font = "font-family='sans-serif' font-size='10' fill='#6b7280'"
 

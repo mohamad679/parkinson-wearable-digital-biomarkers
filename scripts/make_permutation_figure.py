@@ -139,7 +139,7 @@ def _render_svg(
     obs_color = "#dc2626"
     grid_color = "#e5e7eb"
     axis_color = "#374151"
-    label_font = "font-family='sans-serif' font-size='11' fill='#374151'"
+    label_font = "font-family='sans-serif' fill='#374151'"
     title_font = "font-family='sans-serif' font-size='13' font-weight='bold' fill='#1e293b'"
     note_font = "font-family='sans-serif' font-size='10' fill='#64748b'"
     caption_font = "font-family='sans-serif' font-size='18' font-weight='bold' fill='#111827'"
