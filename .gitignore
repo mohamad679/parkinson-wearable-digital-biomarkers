@@ -19,3 +19,7 @@ results/*.json
 # OS / editor
 .DS_Store
 .vscode/
+
+# Local long-running job metadata
+results/*.log
+results/*.pid
