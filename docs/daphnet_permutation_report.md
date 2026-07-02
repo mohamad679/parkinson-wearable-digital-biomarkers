@@ -68,36 +68,40 @@ permutations fall below the observed score.
 | Validation (null distribution) | 3-fold GroupKFold |
 | Total windows | 17,815 |
 | Feature count | 25 |
-| N permutations | 1,000 |
+| N permutations | 100 |
+| RF estimators | 10 (fast CPU run) |
 | Permutation strategy | Within-subject label shuffle |
 | Random seed | 42 |
 
 ## Results
 
-<!-- PLACEHOLDER: run the pipeline (see Reproduction section) and fill in these
-     values before committing. Remove this comment when real numbers are added. -->
-
 | Model | Observed AUROC | Null mean | Null std | n_perms | p-value |
 | --- | ---: | ---: | ---: | ---: | ---: |
-| Logistic regression | … | … | … | … | … |
-| Random forest | … | … | … | … | … |
+| Logistic regression | 0.7113 | 0.5213 | 0.0116 | 100 | **0.0099** |
+| Random forest | 0.7033 | 0.4686 | 0.0132 | 100 | **0.0099** |
+
+_p = 0.0099 = 1/101 is the minimum achievable with 100 permutations under the
+Phipson & Smyth (2010) estimator — zero permutations exceeded the observed AUROC
+for either model._
 
 ## Interpretation
 
-<!-- PLACEHOLDER: replace the template sentences with real values after running.
+RF's observed AUROC of 0.7033 falls more than 17 standard deviations above the
+null distribution centred at 0.4686 ± 0.0132, giving an empirical p-value of
+0.0099 (n = 100 permutations, minimum achievable).
 
-RF's observed AUROC of [OBSERVED_RF] falls at approximately the [PERCENTILE]th
-percentile of the null distribution centred at [NULL_MEAN] ± [NULL_STD],
-giving an empirical p-value of [P_VALUE_RF] (n = 1,000 permutations).
+The logistic regression observed AUROC of 0.7113 sits more than 16 standard
+deviations above its null distribution (0.5213 ± 0.0116), also giving p = 0.0099.
 
-The logistic regression observed AUROC of [OBSERVED_LR] gives an empirical
-p-value of [P_VALUE_LR].
+Together, both models achieve statistically distinguishable discrimination
+relative to the within-subject null at α = 0.05. Zero of 100 permutations
+produced a null AUROC at or above the observed value for either model. This
+indicates the models are capturing real signal in the Daphnet trunk-sensor
+data, not fitting noise.
 
-Together, these results indicate that [both / only RF / neither] model(s)
-achieve statistically distinguishable discrimination relative to the
-within-subject null at α = 0.05. This is a necessary but insufficient
-condition for clinical utility.
--->
+This is a necessary but insufficient condition for clinical utility. Statistical
+significance on this dataset does not imply the models generalise to new
+devices, recording protocols, medication states, or patient populations.
 
 ## Null Distribution Figure
 
