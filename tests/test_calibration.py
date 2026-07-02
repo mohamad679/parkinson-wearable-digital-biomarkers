@@ -1,7 +1,6 @@
 import math
 
 import pytest
-
 from parkinson_wearable_biomarkers.calibration import (
     CalibrationInputError,
     brier_score,

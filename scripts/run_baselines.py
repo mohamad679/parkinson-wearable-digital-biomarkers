@@ -28,6 +28,7 @@ def run_baseline_pipeline(
     window_size: int = 20,
     overlap_fraction: float = 0.5,
     n_splits: int = 3,
+    validation: str = "groupkfold",
     random_seed: int = 42,
     random_forest_estimators: int = 50,
     thresholds: Sequence[float] = (0.3, 0.5, 0.7),
@@ -62,6 +63,7 @@ def run_baseline_pipeline(
                 window_size=window_size,
                 overlap_fraction=overlap_fraction,
                 n_splits=n_splits,
+                validation=validation,
                 random_seed=random_seed,
                 random_forest_estimators=random_forest_estimators,
                 thresholds=thresholds,
@@ -78,6 +80,7 @@ def run_baseline_pipeline(
             window_size=window_size,
             overlap_fraction=overlap_fraction,
             n_splits=n_splits,
+            validation=validation,
             random_seed=random_seed,
             random_forest_estimators=random_forest_estimators,
             thresholds=thresholds,
@@ -104,6 +107,7 @@ def _run_from_csv(
     window_size: int,
     overlap_fraction: float,
     n_splits: int,
+    validation: str,
     random_seed: int,
     random_forest_estimators: int,
     thresholds: Sequence[float],
@@ -118,11 +122,25 @@ def _run_from_csv(
         expected_calibration_error,
     )
     from parkinson_wearable_biomarkers.data import DataSchema, load_csv
-    from parkinson_wearable_biomarkers.evaluate import auprc, auroc, threshold_analysis
+    from parkinson_wearable_biomarkers.evaluate import (
+        aggregate_fold_metrics,
+        auprc,
+        auroc,
+        threshold_analysis,
+    )
     from parkinson_wearable_biomarkers.features import extract_features
     from parkinson_wearable_biomarkers.models import fit_predict_fold
     from parkinson_wearable_biomarkers.preprocessing import create_windows
-    from parkinson_wearable_biomarkers.validation import group_k_fold_splits
+    from parkinson_wearable_biomarkers.validation import (
+        group_k_fold_splits,
+        leave_one_subject_out_splits,
+    )
+
+    _VALID_STRATEGIES = ("groupkfold", "loso")
+    if validation not in _VALID_STRATEGIES:
+        raise ValueError(
+            f"validation must be one of {_VALID_STRATEGIES!r}, got {validation!r}"
+        )
 
     schema = DataSchema(
         accelerometer_columns=accelerometer_columns,
@@ -140,7 +158,12 @@ def _run_from_csv(
         sampling_rate_hz=sampling_rate_hz,
         rolling_window_size=min(3, window_size),
     )
-    folds = group_k_fold_splits(feature_data, n_splits=n_splits)
+
+    if validation == "loso":
+        folds = leave_one_subject_out_splits(feature_data)
+    else:
+        folds = group_k_fold_splits(feature_data, n_splits=n_splits)
+
     model_summaries: dict[str, Any] = {}
 
     for model_name in ("logistic_regression", "random_forest"):
@@ -154,22 +177,67 @@ def _run_from_csv(
             )
             for fold in folds
         )
-        labels = tuple(label for prediction in fold_predictions for label in prediction.labels)
-        probabilities = tuple(
-            probability
-            for prediction in fold_predictions
-            for probability in prediction.probabilities
-        )
-        threshold_results = threshold_analysis(
-            labels, probabilities, thresholds=thresholds
-        )
+
+        # ── Per-fold metrics ────────────────────────────────────────────────
+        per_fold_records: list[dict[str, Any]] = []
+        for prediction in fold_predictions:
+            fold_labels = prediction.labels
+            fold_probs = prediction.probabilities
+            # Derive the unique test-subject ID(s) for this fold.
+            unique_subjects = sorted(set(prediction.subject_ids))
+            subject_label = (
+                unique_subjects[0]
+                if len(unique_subjects) == 1
+                else ",".join(unique_subjects)
+            )
+
+            fold_record: dict[str, Any] = {
+                "fold_index": prediction.fold_index,
+                "subject_id": subject_label,
+                "n_windows": len(fold_labels),
+                "n_positive": sum(fold_labels),
+            }
+            try:
+                fold_record["auroc"] = auroc(fold_labels, fold_probs)
+                fold_record["auprc"] = auprc(fold_labels, fold_probs)
+                fold_record["brier_score"] = brier_score(fold_labels, fold_probs)
+                fold_record["expected_calibration_error"] = expected_calibration_error(
+                    fold_labels, fold_probs, n_bins=calibration_bins
+                )
+                fold_threshold_results = threshold_analysis(
+                    fold_labels, fold_probs, thresholds=thresholds
+                )
+                fold_record["threshold_analysis"] = [
+                    _serialize_threshold_result(item) for item in fold_threshold_results
+                ]
+            except Exception as exc:  # noqa: BLE001
+                # A fold may lack both classes (e.g. all-negative test subject).
+                fold_record["error"] = str(exc)
+            per_fold_records.append(fold_record)
+
+        # ── Aggregate across folds ──────────────────────────────────────────
+        numeric_fold_records = [
+            r for r in per_fold_records if "error" not in r
+        ]
+        scalar_keys = ["auroc", "auprc", "brier_score", "expected_calibration_error"]
+        aggregate = aggregate_fold_metrics(
+            [{k: r[k] for k in scalar_keys if k in r} for r in numeric_fold_records]
+        ) if numeric_fold_records else {"n_folds": 0}
+
+        # ── Whole-dataset calibration curve (kept for backward compat) ──────
+        all_labels = tuple(label for p in fold_predictions for label in p.labels)
+        all_probs = tuple(prob for p in fold_predictions for prob in p.probabilities)
         calibration_bins_data = calibration_curve_data(
-            labels, probabilities, n_bins=calibration_bins
+            all_labels, all_probs, n_bins=calibration_bins
         )
+
         model_summaries[model_name] = {
-            "auprc": auprc(labels, probabilities),
-            "auroc": auroc(labels, probabilities),
-            "brier_score": brier_score(labels, probabilities),
+            "aggregate": aggregate,
+            "per_fold": per_fold_records,
+            # Whole-dataset scalars retained for backward compatibility.
+            "auprc": auprc(all_labels, all_probs),
+            "auroc": auroc(all_labels, all_probs),
+            "brier_score": brier_score(all_labels, all_probs),
             "calibration_curve": [
                 {
                     "bin_index": item.bin_index,
@@ -182,16 +250,17 @@ def _run_from_csv(
                 for item in calibration_bins_data
             ],
             "expected_calibration_error": expected_calibration_error(
-                labels, probabilities, n_bins=calibration_bins
+                all_labels, all_probs, n_bins=calibration_bins
             ),
             "threshold_analysis": [
-                _serialize_threshold_result(item) for item in threshold_results
+                _serialize_threshold_result(item)
+                for item in threshold_analysis(all_labels, all_probs, thresholds=thresholds)
             ],
         }
 
     return {
         "interpretation": (
-            "Synthetic, non-diagnostic research benchmark; not evidence of clinical readiness."
+            "Non-diagnostic research benchmark; not evidence of clinical readiness."
         ),
         "models": model_summaries,
         "pipeline": {
@@ -203,6 +272,7 @@ def _run_from_csv(
             "sample_count": len(sensor_data),
             "sampling_rate_hz": sampling_rate_hz,
             "subject_count": len(set(sensor_data.subject_ids)),
+            "validation": validation,
             "window_count": len(windows),
             "window_size_samples": window_size,
         },
@@ -245,6 +315,12 @@ def _build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--window-size", type=int, default=20)
     parser.add_argument("--overlap", type=float, default=0.5)
     parser.add_argument("--folds", type=int, default=3)
+    parser.add_argument(
+        "--validation",
+        choices=("groupkfold", "loso"),
+        default="groupkfold",
+        help="Validation strategy: groupkfold (default) or loso.",
+    )
     parser.add_argument("--random-seed", type=int, default=42)
     parser.add_argument("--random-forest-estimators", type=int, default=50)
     parser.add_argument("--thresholds", type=float, nargs="+", default=[0.3, 0.5, 0.7])
@@ -274,6 +350,7 @@ def main(argv: list[str] | None = None) -> int:
             window_size=arguments.window_size,
             overlap_fraction=arguments.overlap,
             n_splits=arguments.folds,
+            validation=arguments.validation,
             random_seed=arguments.random_seed,
             random_forest_estimators=arguments.random_forest_estimators,
             thresholds=arguments.thresholds,

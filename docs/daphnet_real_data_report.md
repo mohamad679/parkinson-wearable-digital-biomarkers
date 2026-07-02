@@ -1,8 +1,14 @@
 # Preliminary Daphnet Trunk-Sensor Benchmark
 
+> **Superseded for primary metrics:** The per-subject LOSO breakdown in
+> [daphnet_loso_report.md](daphnet_loso_report.md) is the primary validation
+> result going forward; this report retains the original 3-fold grouped
+> estimate for reference.
+
 > **Research-use boundary:** This is a preliminary, research-only reproducibility
 > report. It is non-diagnostic, has not been clinically validated, and is not evidence
 > of clinical readiness, safety, or utility for decisions about an individual.
+
 
 ## Dataset Provenance and Citation
 
