@@ -221,9 +221,7 @@ def run_permutation_test(
             continue
 
         null_mean = math.fsum(null_aurocs) / n_effective
-        null_variance = (
-            math.fsum((v - null_mean) ** 2 for v in null_aurocs) / n_effective
-        )
+        null_variance = math.fsum((v - null_mean) ** 2 for v in null_aurocs) / n_effective
         null_std = math.sqrt(null_variance)
 
         # Conservative p-value: Phipson & Smyth (2010).
@@ -328,9 +326,7 @@ def _build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--n-permutations", type=int, default=1000)
     parser.add_argument("--random-seed", type=int, default=42)
     parser.add_argument("--random-forest-estimators", type=int, default=50)
-    parser.add_argument(
-        "--accelerometer-columns", nargs="+", default=["acc_x", "acc_y", "acc_z"]
-    )
+    parser.add_argument("--accelerometer-columns", nargs="+", default=["acc_x", "acc_y", "acc_z"])
     parser.add_argument("--subject-id-column", default="subject_id")
     parser.add_argument("--label-column", default="label")
     return parser

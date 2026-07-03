@@ -47,9 +47,7 @@ def _load_benchmark(path: str | Path) -> dict[str, Any]:
     try:
         value = json.loads(Path(path).read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError) as error:
-        raise LOSOFigureInputError(
-            f"Unable to read benchmark JSON: {error}"
-        ) from error
+        raise LOSOFigureInputError(f"Unable to read benchmark JSON: {error}") from error
     if not isinstance(value, dict):
         raise LOSOFigureInputError("Benchmark JSON must contain an object")
     return value
@@ -62,14 +60,10 @@ def _extract_per_fold_aurocs(
     """Return a list of (subject_id, auroc) pairs and the mean AUROC."""
     raw_models = benchmark.get("models")
     if not isinstance(raw_models, dict) or not raw_models:
-        raise LOSOFigureInputError(
-            "Benchmark JSON must contain non-empty model results"
-        )
+        raise LOSOFigureInputError("Benchmark JSON must contain non-empty model results")
     if model_name not in raw_models:
         available = sorted(raw_models)
-        raise LOSOFigureInputError(
-            f"Model {model_name!r} not found; available: {available}"
-        )
+        raise LOSOFigureInputError(f"Model {model_name!r} not found; available: {available}")
 
     model_data = raw_models[model_name]
     per_fold = model_data.get("per_fold")
@@ -86,14 +80,10 @@ def _extract_per_fold_aurocs(
         sid = str(fold.get("subject_id", f"fold_{fold.get('fold_index', '?')}"))
         raw_auroc = fold.get("auroc")
         if not isinstance(raw_auroc, int | float) or isinstance(raw_auroc, bool):
-            raise LOSOFigureInputError(
-                f"AUROC for fold {sid!r} must be numeric"
-            )
+            raise LOSOFigureInputError(f"AUROC for fold {sid!r} must be numeric")
         auroc_value = float(raw_auroc)
         if not math.isfinite(auroc_value) or not 0.0 <= auroc_value <= 1.0:
-            raise LOSOFigureInputError(
-                f"AUROC for fold {sid!r} must be finite and between 0 and 1"
-            )
+            raise LOSOFigureInputError(f"AUROC for fold {sid!r} must be finite and between 0 and 1")
         subject_aurocs.append((sid, auroc_value))
 
     if not subject_aurocs:
@@ -125,7 +115,7 @@ def _render_svg(
     mean_color = "#dc2626"
     grid_color = "#e5e7eb"
     axis_color = "#374151"
-    label_font = "font-family='sans-serif' font-size='12' fill='#374151'"
+    label_font = "font-family='sans-serif' fill='#374151'"
     title_font = "font-family='sans-serif' font-size='17' font-weight='bold' fill='#111827'"
     note_font = "font-family='sans-serif' font-size='10' fill='#6b7280'"
 
@@ -149,7 +139,7 @@ def _render_svg(
     model_label = html.escape(model_name.replace("_", " ").title())
     lines.append(
         f'<text x="{width // 2}" y="35" text-anchor="middle" {title_font}>'
-        f'Per-subject AUROC \u2014 {model_label}</text>'
+        f"Per-subject AUROC \u2014 {model_label}</text>"
     )
 
     for tick_num in range(6):
@@ -191,7 +181,7 @@ def _render_svg(
     lines.append(
         f'<text x="{plot_right + 5}" y="{mean_y + 4:.1f}" '
         f'font-family="sans-serif" font-size="11" fill="{mean_color}">'
-        f'mean={mean_auroc:.3f}</text>'
+        f"mean={mean_auroc:.3f}</text>"
     )
 
     for i, (sid, auroc_val) in enumerate(subject_aurocs):
@@ -204,21 +194,18 @@ def _render_svg(
         lines.append(
             f'<text x="{x:.1f}" y="{y - dot_r - 5:.1f}" '
             f'text-anchor="middle" {label_font} font-size="10">'
-            f'{auroc_val:.3f}</text>'
+            f"{auroc_val:.3f}</text>"
         )
         lines.append(
             f'<text x="{x:.1f}" y="{plot_bottom + 18:.1f}" '
             f'text-anchor="middle" {label_font}>'
-            f'{html.escape(sid)}</text>'
+            f"{html.escape(sid)}</text>"
         )
 
     legend_y = plot_bottom + 45
+    lines.append(f'<circle cx="{plot_left}" cy="{legend_y}" r="6" fill="{dot_color}"/>')
     lines.append(
-        f'<circle cx="{plot_left}" cy="{legend_y}" r="6" fill="{dot_color}"/>'
-    )
-    lines.append(
-        f'<text x="{plot_left + 14}" y="{legend_y + 4}" {label_font}>'
-        f'Per-subject AUROC</text>'
+        f'<text x="{plot_left + 14}" y="{legend_y + 4}" {label_font}>Per-subject AUROC</text>'
     )
     lines.append(
         f'<line x1="{plot_left + 140}" y1="{legend_y}" '
@@ -226,14 +213,13 @@ def _render_svg(
         f'stroke="{mean_color}" stroke-width="2" stroke-dasharray="6 3"/>'
     )
     lines.append(
-        f'<text x="{plot_left + 170}" y="{legend_y + 4}" {label_font}>'
-        f'Mean across subjects</text>'
+        f'<text x="{plot_left + 170}" y="{legend_y + 4}" {label_font}>Mean across subjects</text>'
     )
 
     lines.append(
         f'<text x="{width // 2}" y="{height - 10}" '
         f'text-anchor="middle" {note_font}>'
-        f'Non-diagnostic research output \u2014 N={n} subjects</text>'
+        f"Non-diagnostic research output \u2014 N={n} subjects</text>"
     )
 
     lines.append("</svg>")
@@ -247,9 +233,7 @@ def _build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         description="Create a per-subject AUROC dot-plot SVG from a LOSO benchmark JSON."
     )
-    parser.add_argument(
-        "--input", type=Path, required=True, help="LOSO benchmark JSON path."
-    )
+    parser.add_argument("--input", type=Path, required=True, help="LOSO benchmark JSON path.")
     parser.add_argument(
         "--output",
         type=Path,
@@ -268,9 +252,7 @@ def main(argv: list[str] | None = None) -> int:
     parser = _build_parser()
     arguments = parser.parse_args(argv)
     try:
-        output = make_loso_figure(
-            arguments.input, arguments.output, model_name=arguments.model
-        )
+        output = make_loso_figure(arguments.input, arguments.output, model_name=arguments.model)
     except LOSOFigureInputError as error:
         parser.error(str(error))
         return 1

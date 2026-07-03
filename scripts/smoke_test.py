@@ -84,9 +84,7 @@ def _run_command(project_root: Path, script: str, *arguments: str) -> None:
         check=False,
     )
     if completed.returncode:
-        raise RuntimeError(
-            f"Command failed ({script}):\n{completed.stdout}\n{completed.stderr}"
-        )
+        raise RuntimeError(f"Command failed ({script}):\n{completed.stdout}\n{completed.stderr}")
 
 
 if __name__ == "__main__":

@@ -62,9 +62,7 @@ def create_windows(
     are tied, the label that occurs first in the window is selected. This makes
     mixed-label handling deterministic without assigning meaning to label values.
     """
-    normalized_window_size, step_size = _validate_window_parameters(
-        window_size, overlap_fraction
-    )
+    normalized_window_size, step_size = _validate_window_parameters(window_size, overlap_fraction)
     windows: list[tuple[tuple[float, ...], ...]] = []
     subject_ids: list[str] = []
     labels: list[int] = []
@@ -73,9 +71,7 @@ def create_windows(
     while segment_start < len(dataset):
         subject_id = dataset.subject_ids[segment_start]
         segment_end = segment_start + 1
-        while (
-            segment_end < len(dataset) and dataset.subject_ids[segment_end] == subject_id
-        ):
+        while segment_end < len(dataset) and dataset.subject_ids[segment_end] == subject_id:
             segment_end += 1
 
         final_start = segment_end - normalized_window_size

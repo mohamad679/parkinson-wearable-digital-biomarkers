@@ -31,9 +31,7 @@ def brier_score(labels: Sequence[int], probabilities: Sequence[float]) -> float:
     )
     squared_errors = (
         (probability - label) ** 2
-        for label, probability in zip(
-            normalized_labels, normalized_probabilities, strict=True
-        )
+        for label, probability in zip(normalized_labels, normalized_probabilities, strict=True)
     )
     return math.fsum(squared_errors) / len(normalized_labels)
 
@@ -55,10 +53,7 @@ def expected_calibration_error(
     return math.fsum(
         calibration_bin.count
         / len(normalized_labels)
-        * abs(
-            calibration_bin.mean_probability
-            - calibration_bin.observed_positive_rate
-        )
+        * abs(calibration_bin.mean_probability - calibration_bin.observed_positive_rate)
         for calibration_bin in bins
     )
 
@@ -106,8 +101,7 @@ def _build_calibration_bins(
                 lower_bound=bin_index / n_bins,
                 upper_bound=(bin_index + 1) / n_bins,
                 count=len(probabilities_in_bin),
-                mean_probability=math.fsum(probabilities_in_bin)
-                / len(probabilities_in_bin),
+                mean_probability=math.fsum(probabilities_in_bin) / len(probabilities_in_bin),
                 observed_positive_rate=math.fsum(labels_in_bin) / len(labels_in_bin),
             )
         )
@@ -134,9 +128,7 @@ def _validate_calibration_inputs(
             raise CalibrationInputError("Probabilities must be real numbers")
         normalized_probability = float(probability)
         if not math.isfinite(normalized_probability) or not 0.0 <= normalized_probability <= 1.0:
-            raise CalibrationInputError(
-                "Probabilities must be finite values between 0 and 1"
-            )
+            raise CalibrationInputError("Probabilities must be finite values between 0 and 1")
         validated_probabilities.append(normalized_probability)
 
     return tuple(int(label) for label in normalized_labels), tuple(validated_probabilities)

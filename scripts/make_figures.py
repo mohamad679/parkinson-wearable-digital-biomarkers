@@ -121,7 +121,7 @@ def _render_svg(models: tuple[tuple[str, float, float], ...]) -> str:
             lines.append(
                 f'<text x="{x + (bar_width - 6) / 2:.1f}" y="{y - 6:.1f}" '
                 f'text-anchor="middle" font-family="sans-serif" font-size="11">'
-                f'{value:.3f}</text>'
+                f"{value:.3f}</text>"
             )
         lines.append(
             f'<text x="{group_center:.1f}" y="365" text-anchor="middle" '
@@ -135,8 +135,7 @@ def _render_svg(models: tuple[tuple[str, float, float], ...]) -> str:
         x = legend_x + model_index * 260
         lines.append(f'<rect x="{x}" y="390" width="14" height="14" fill="{color}"/>')
         lines.append(
-            f'<text x="{x + 21}" y="402" font-family="sans-serif" '
-            f'font-size="12">{label}</text>'
+            f'<text x="{x + 21}" y="402" font-family="sans-serif" font-size="12">{label}</text>'
         )
 
     lines.append(
@@ -148,9 +147,7 @@ def _render_svg(models: tuple[tuple[str, float, float], ...]) -> str:
 
 
 def _build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(
-        description="Create a reproducible SVG from benchmark JSON."
-    )
+    parser = argparse.ArgumentParser(description="Create a reproducible SVG from benchmark JSON.")
     parser.add_argument("--input", type=Path, required=True, help="Benchmark JSON path.")
     parser.add_argument(
         "--output",

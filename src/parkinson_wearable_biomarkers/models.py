@@ -131,9 +131,7 @@ def fit_random_forest(
     seed = _validate_random_seed(random_seed)
     tree_count = _validate_positive_integer(n_estimators, "Number of estimators")
     normalized_depth = (
-        None
-        if max_depth is None
-        else _validate_positive_integer(max_depth, "Maximum tree depth")
+        None if max_depth is None else _validate_positive_integer(max_depth, "Maximum tree depth")
     )
     _, features, labels = _training_rows(dataset, train_indices)
     estimator = RandomForestClassifier(

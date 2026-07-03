@@ -228,9 +228,7 @@ def _build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument("--input", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
-    parser.add_argument(
-        "--sensor", choices=sorted(_SENSOR_COLUMNS), default="trunk"
-    )
+    parser.add_argument("--sensor", choices=sorted(_SENSOR_COLUMNS), default="trunk")
     return parser
 
 

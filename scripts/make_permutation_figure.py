@@ -74,9 +74,7 @@ def _extract_model_data(
         if not isinstance(model, dict):
             raise PermFigureInputError(f"Model {model_name!r} data must be an object")
         if "error" in model:
-            raise PermFigureInputError(
-                f"Model {model_name!r} has an error: {model['error']}"
-            )
+            raise PermFigureInputError(f"Model {model_name!r} has an error: {model['error']}")
 
         observed = model.get("observed_auroc")
         p_value = model.get("p_value")
@@ -87,9 +85,7 @@ def _extract_model_data(
         if not isinstance(p_value, int | float) or isinstance(p_value, bool):
             raise PermFigureInputError(f"p_value for {model_name!r} must be numeric")
         if not isinstance(null_auroc, list) or not null_auroc:
-            raise PermFigureInputError(
-                f"null_auroc for {model_name!r} must be a non-empty list"
-            )
+            raise PermFigureInputError(f"null_auroc for {model_name!r} must be a non-empty list")
 
         result.append((model_name, float(observed), float(p_value), [float(v) for v in null_auroc]))
     return result
@@ -98,9 +94,7 @@ def _extract_model_data(
 # ── Histogram helper ──────────────────────────────────────────────────────────
 
 
-def _histogram_bins(
-    values: list[float], n_bins: int
-) -> list[tuple[float, float, int]]:
+def _histogram_bins(values: list[float], n_bins: int) -> list[tuple[float, float, int]]:
     """Return (lower, upper, count) for each equal-width bin over [0, 1]."""
     bins: list[tuple[float, float, int]] = []
     for i in range(n_bins):
@@ -139,7 +133,7 @@ def _render_svg(
     obs_color = "#dc2626"
     grid_color = "#e5e7eb"
     axis_color = "#374151"
-    label_font = "font-family='sans-serif' font-size='11' fill='#374151'"
+    label_font = "font-family='sans-serif' fill='#374151'"
     title_font = "font-family='sans-serif' font-size='13' font-weight='bold' fill='#1e293b'"
     note_font = "font-family='sans-serif' font-size='10' fill='#64748b'"
     caption_font = "font-family='sans-serif' font-size='18' font-weight='bold' fill='#111827'"
@@ -153,7 +147,7 @@ def _render_svg(
         '<rect width="100%" height="100%" fill="#ffffff"/>',
         (
             f'<text x="{total_w // 2}" y="28" text-anchor="middle" {caption_font}>'
-            f'Permutation test \u2014 null AUROC distributions</text>'
+            f"Permutation test \u2014 null AUROC distributions</text>"
         ),
     ]
 
@@ -272,14 +266,11 @@ def _render_svg(
         f'x2="{legend_x + 185}" y2="{legend_y - 4}" '
         f'stroke="{obs_color}" stroke-width="2" stroke-dasharray="5 3"/>'
     )
-    lines.append(
-        f'<text x="{legend_x + 190}" y="{legend_y}" {note_font}>'
-        f'Observed AUROC</text>'
-    )
+    lines.append(f'<text x="{legend_x + 190}" y="{legend_y}" {note_font}>Observed AUROC</text>')
     lines.append(
         f'<text x="{total_w - margin_right}" y="{legend_y}" '
         f'text-anchor="end" {note_font}>'
-        f'Non-diagnostic research output</text>'
+        f"Non-diagnostic research output</text>"
     )
 
     lines.append("</svg>")
@@ -292,13 +283,10 @@ def _render_svg(
 def _build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         description=(
-            "Create a two-panel null-distribution histogram SVG "
-            "from a permutation test JSON."
+            "Create a two-panel null-distribution histogram SVG from a permutation test JSON."
         )
     )
-    parser.add_argument(
-        "--input", type=Path, required=True, help="Permutation test JSON path."
-    )
+    parser.add_argument("--input", type=Path, required=True, help="Permutation test JSON path.")
     parser.add_argument(
         "--output",
         type=Path,
@@ -313,9 +301,7 @@ def main(argv: list[str] | None = None) -> int:
     parser = _build_parser()
     arguments = parser.parse_args(argv)
     try:
-        output = make_permutation_figure(
-            arguments.input, arguments.output, n_bins=arguments.n_bins
-        )
+        output = make_permutation_figure(arguments.input, arguments.output, n_bins=arguments.n_bins)
     except PermFigureInputError as error:
         parser.error(str(error))
         return 1

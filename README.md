@@ -130,17 +130,18 @@ that YAML file.
 
 ## Real-data Daphnet Benchmark
 
-Four research-only, non-clinical reports document the preliminary trunk/hip-sensor results:
+The Daphnet documentation set includes research-only, non-clinical reports plus an artifact manifest for local reproducibility:
 
 | Report | Contents |
 |---|---|
 | [docs/daphnet_real_data_report.md](docs/daphnet_real_data_report.md) | Original 3-fold GroupKFold point estimate (reference baseline) |
-| [docs/daphnet_loso_report.md](docs/daphnet_loso_report.md) | Leave-One-Subject-Out breakdown — mean ± std across 10 subjects |
+| [docs/daphnet_loso_report.md](docs/daphnet_loso_report.md) | Leave-One-Subject-Out breakdown — mean ± SD over evaluable subjects |
 | [docs/daphnet_permutation_report.md](docs/daphnet_permutation_report.md) | Within-subject permutation test — empirical p-value for the observed AUROC |
 | [docs/daphnet_leakage_ablation.md](docs/daphnet_leakage_ablation.md) | Leaky vs. honest split ablation — measured AUROC inflation from naive splitting |
+| [docs/daphnet_artifact_manifest.md](docs/daphnet_artifact_manifest.md) | Local ignored artifact hashes, provenance, and reproducibility boundary |
 
-All four are research-only reproducibility results, not clinical evidence or clinically
-validated FoG detectors.
+The benchmark reports are research-only reproducibility results, not clinical evidence or clinically
+validated FoG detectors. The artifact manifest documents local ignored inputs and outputs only.
 
 After manually downloading Daphnet, keep its ZIP or extracted directory under the
 ignored `data/raw/` path. Convert it locally with:

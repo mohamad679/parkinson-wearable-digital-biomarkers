@@ -107,11 +107,7 @@ def extract_features(
 def _build_feature_names(
     accelerometer_columns: tuple[str, ...], rolling_window_size: int
 ) -> tuple[str, ...]:
-    names = [
-        f"{axis}__{feature}"
-        for axis in accelerometer_columns
-        for feature in _SIGNAL_FEATURES
-    ]
+    names = [f"{axis}__{feature}" for axis in accelerometer_columns for feature in _SIGNAL_FEATURES]
     names.extend(f"magnitude__{feature}" for feature in _SIGNAL_FEATURES)
     names.append(f"magnitude__rolling_variance_mean_w{rolling_window_size}")
     return tuple(names)
@@ -138,9 +134,7 @@ def _signal_features(values: tuple[float, ...], sampling_rate_hz: float) -> tupl
     finite_values = tuple(value for value in values if math.isfinite(value))
     if finite_values:
         mean = math.fsum(finite_values) / len(finite_values)
-        variance = math.fsum((value - mean) ** 2 for value in finite_values) / len(
-            finite_values
-        )
+        variance = math.fsum((value - mean) ** 2 for value in finite_values) / len(finite_values)
         minimum = min(finite_values)
         maximum = max(finite_values)
         energy = math.fsum(value * value for value in finite_values)
@@ -203,9 +197,7 @@ def _rolling_variance_mean(values: tuple[float, ...], rolling_window_size: int) 
     variances: list[float] = []
     for start in range(len(values) - rolling_window_size + 1):
         finite_values = tuple(
-            value
-            for value in values[start : start + rolling_window_size]
-            if math.isfinite(value)
+            value for value in values[start : start + rolling_window_size] if math.isfinite(value)
         )
         if not finite_values:
             variances.append(0.0)
@@ -229,9 +221,7 @@ def _validate_sampling_rate(sampling_rate_hz: float) -> float:
     return normalized_rate
 
 
-def _validate_rolling_window_size(
-    rolling_window_size: int | None, input_window_size: int
-) -> int:
+def _validate_rolling_window_size(rolling_window_size: int | None, input_window_size: int) -> int:
     if rolling_window_size is None:
         return min(3, input_window_size)
     if isinstance(rolling_window_size, bool) or not isinstance(rolling_window_size, Integral):

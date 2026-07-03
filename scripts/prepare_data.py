@@ -30,9 +30,7 @@ def generate_synthetic_csv(
     if subjects < 2:
         raise ValueError("Subject count must be at least 2 for subject-aware validation")
     if samples < 2 * segment_size:
-        raise ValueError(
-            "Samples per subject must cover at least two event-label segments"
-        )
+        raise ValueError("Samples per subject must cover at least two event-label segments")
 
     output = Path(output_path)
     output.parent.mkdir(parents=True, exist_ok=True)
@@ -49,21 +47,15 @@ def generate_synthetic_csv(
             for sample_index in range(samples):
                 label = (sample_index // segment_size) % 2
                 frequency_hz = 1.0 + 2.0 * label
-                angle = (
-                    2.0 * math.pi * frequency_hz * sample_index / sampling_rate
-                    + subject_phase
-                )
+                angle = 2.0 * math.pi * frequency_hz * sample_index / sampling_rate + subject_phase
                 writer.writerow(
                     {
                         "subject_id": subject_id,
                         "acc_x": _format_sensor_value(
-                            math.sin(angle)
-                            + subject_offset
-                            + generator.uniform(-0.02, 0.02)
+                            math.sin(angle) + subject_offset + generator.uniform(-0.02, 0.02)
                         ),
                         "acc_y": _format_sensor_value(
-                            0.7 * math.cos(angle)
-                            + generator.uniform(-0.02, 0.02)
+                            0.7 * math.cos(angle) + generator.uniform(-0.02, 0.02)
                         ),
                         "acc_z": _format_sensor_value(
                             1.0

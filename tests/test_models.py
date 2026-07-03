@@ -41,9 +41,7 @@ def test_baseline_models_predict_positive_probability_shape_and_range(model_name
     dataset = _make_dataset()
     fold = group_k_fold_splits(dataset, n_splits=2)[0]
     if model_name == "logistic_regression":
-        model = fit_logistic_regression(
-            dataset, train_indices=fold.train_indices, random_seed=7
-        )
+        model = fit_logistic_regression(dataset, train_indices=fold.train_indices, random_seed=7)
     else:
         model = fit_random_forest(
             dataset,

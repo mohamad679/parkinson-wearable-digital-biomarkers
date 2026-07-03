@@ -157,8 +157,9 @@ python scripts/run_baselines.py \
 
 python scripts/make_figures.py \
   --input results/daphnet_trunk_benchmark.json \
-  --output results/figures/daphnet_trunk_benchmark.svg
+  --output docs/figures/daphnet_trunk_benchmark.svg
 ```
 
-The raw archive, extracted recordings, converted CSV, benchmark JSON, and generated
-`results/figures/` outputs are ignored and must remain uncommitted.
+The raw archive, extracted recordings, converted CSV, and benchmark JSON are
+ignored and must remain uncommitted. The aggregate-only SVG under
+`docs/figures/` is committed as a publishable documentation artifact.

@@ -13,9 +13,7 @@ from parkinson_wearable_biomarkers.validation import (
 def _make_dataset(subject_ids):
     return FeatureDataset(
         feature_names=("feature_a", "feature_b"),
-        features=tuple(
-            (float(index), float(index % 2)) for index in range(len(subject_ids))
-        ),
+        features=tuple((float(index), float(index % 2)) for index in range(len(subject_ids))),
         subject_ids=tuple(subject_ids),
         labels=tuple(index % 2 for index in range(len(subject_ids))),
     )
@@ -26,9 +24,7 @@ def _subjects(dataset, indices):
 
 
 def test_group_k_fold_has_no_subject_leakage_and_complete_test_coverage():
-    dataset = _make_dataset(
-        ["s1"] * 4 + ["s2"] * 3 + ["s3"] * 2 + ["s4"]
-    )
+    dataset = _make_dataset(["s1"] * 4 + ["s2"] * 3 + ["s3"] * 2 + ["s4"])
 
     folds = group_k_fold_splits(dataset, n_splits=2)
 
@@ -69,9 +65,7 @@ def test_subject_aware_splitting_rejects_a_single_subject():
 
 
 def test_group_k_fold_is_deterministic():
-    dataset = _make_dataset(
-        ["s3", "s1", "s2", "s1", "s3", "s4", "s2", "s3"]
-    )
+    dataset = _make_dataset(["s3", "s1", "s2", "s1", "s3", "s4", "s2", "s3"])
 
     first = group_k_fold_splits(dataset, n_splits=3)
     second = group_k_fold_splits(dataset, n_splits=3)
@@ -86,9 +80,7 @@ def test_leave_one_subject_out_uses_first_appearance_order():
 
     assert [fold.fold_index for fold in folds] == [0, 1, 2]
     assert [fold.test_indices for fold in folds] == [(0, 1), (2, 4), (3, 5)]
-    assert [
-        _subjects(dataset, fold.test_indices) for fold in folds
-    ] == [{"s2"}, {"s1"}, {"s3"}]
+    assert [_subjects(dataset, fold.test_indices) for fold in folds] == [{"s2"}, {"s1"}, {"s3"}]
     for fold in folds:
         assert_no_subject_leakage(dataset, fold.train_indices, fold.test_indices)
 

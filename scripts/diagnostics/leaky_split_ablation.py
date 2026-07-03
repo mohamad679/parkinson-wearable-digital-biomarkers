@@ -146,9 +146,7 @@ def run_leaky_ablation(
         all_labels: list[int] = []
         all_probs: list[float] = []
 
-        for train_indices, test_indices in skf.split(
-            range(n_windows), labels_list
-        ):
+        for train_indices, test_indices in skf.split(range(n_windows), labels_list):
             fitted_model = fitter(list(train_indices))
             fold_probs = fitted_model.predict_positive_probabilities(
                 feature_data, indices=list(test_indices)
@@ -228,9 +226,7 @@ def _build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--folds", type=int, default=3)
     parser.add_argument("--random-seed", type=int, default=42)
     parser.add_argument("--random-forest-estimators", type=int, default=50)
-    parser.add_argument(
-        "--accelerometer-columns", nargs="+", default=["acc_x", "acc_y", "acc_z"]
-    )
+    parser.add_argument("--accelerometer-columns", nargs="+", default=["acc_x", "acc_y", "acc_z"])
     parser.add_argument("--subject-id-column", default="subject_id")
     parser.add_argument("--label-column", default="label")
     return parser
@@ -266,9 +262,7 @@ def main(argv: list[str] | None = None) -> int:
         parser.error(str(error))
         return 1
 
-    compact = {
-        k: v for k, v in summary.items() if k != "DIAGNOSTIC_WARNING"
-    }
+    compact = {k: v for k, v in summary.items() if k != "DIAGNOSTIC_WARNING"}
     compact["DIAGNOSTIC_WARNING"] = summary["DIAGNOSTIC_WARNING"]
     print(json.dumps(compact, sort_keys=True, indent=2))
     return 0

@@ -122,9 +122,7 @@ class ThresholdMetrics:
 
 def auroc(labels: Sequence[int], probabilities: Sequence[float]) -> float:
     """Compute tie-aware area under the ROC curve using average ranks."""
-    normalized_labels, normalized_probabilities = _validate_binary_inputs(
-        labels, probabilities
-    )
+    normalized_labels, normalized_probabilities = _validate_binary_inputs(labels, probabilities)
     positive_count, negative_count = _require_both_classes(normalized_labels, "AUROC")
 
     ordered = sorted(
@@ -144,16 +142,12 @@ def auroc(labels: Sequence[int], probabilities: Sequence[float]) -> float:
         group_start = group_end
 
     minimum_positive_rank_sum = positive_count * (positive_count + 1) / 2.0
-    return (positive_rank_sum - minimum_positive_rank_sum) / (
-        positive_count * negative_count
-    )
+    return (positive_rank_sum - minimum_positive_rank_sum) / (positive_count * negative_count)
 
 
 def auprc(labels: Sequence[int], probabilities: Sequence[float]) -> float:
     """Compute non-interpolated average precision with score ties grouped."""
-    normalized_labels, normalized_probabilities = _validate_binary_inputs(
-        labels, probabilities
-    )
+    normalized_labels, normalized_probabilities = _validate_binary_inputs(labels, probabilities)
     positive_count, _ = _require_both_classes(normalized_labels, "AUPRC")
 
     ordered = sorted(
@@ -190,9 +184,7 @@ def confusion_matrix(
     threshold: float = 0.5,
 ) -> ConfusionMatrix:
     """Compute binary confusion counts using ``probability >= threshold``."""
-    normalized_labels, normalized_probabilities = _validate_binary_inputs(
-        labels, probabilities
-    )
+    normalized_labels, normalized_probabilities = _validate_binary_inputs(labels, probabilities)
     normalized_threshold = _validate_threshold(threshold)
     return _confusion_matrix(normalized_labels, normalized_probabilities, normalized_threshold)
 
@@ -225,9 +217,7 @@ def threshold_analysis(
     thresholds: Sequence[float],
 ) -> tuple[ThresholdMetrics, ...]:
     """Compute imbalance-aware metrics for each supplied threshold in order."""
-    normalized_labels, normalized_probabilities = _validate_binary_inputs(
-        labels, probabilities
-    )
+    normalized_labels, normalized_probabilities = _validate_binary_inputs(labels, probabilities)
     _require_both_classes(normalized_labels, "Threshold analysis")
     normalized_thresholds = _validate_thresholds(thresholds)
 
