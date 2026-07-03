@@ -9,7 +9,7 @@
 | Item | Value |
 | --- | --- |
 | Audited branch | `agent/phase-1-2-3-validation-ablation` |
-| Audited commit before manifest | `e7686b9c35073082125848718dc2eadd7babf7ab` |
+| Audited commit before final permutation update | `b01066cf636dfe1308302e320d63b57dd0d61342` |
 | Python | `3.11.9` |
 | NumPy | `2.4.6` |
 | scikit-learn | `1.9.0` |
@@ -38,7 +38,7 @@ by Git. Their aggregate values are copied into the committed reports.
 | 3-fold grouped benchmark JSON | `results/daphnet_trunk_benchmark.json` | ~17 KB | `ee0680369a2a1e47f9e454f684573c465048a02c877d3795585a219ea8a08dcb` |
 | LOSO benchmark JSON | `results/daphnet_trunk_loso_benchmark.json` | ~34 KB | `58c3929100559182af177cbfea71da13111023375a3d034ab08071b3739f69cd` |
 | Leaky diagnostic JSON | `results/daphnet_trunk_leaky_benchmark.json` | ~1.1 KB | `b7b0a2930aa377b67e9a399fc41035915dc05b00f5f8fbacc446beb9f4a57fe7` |
-| Fast permutation JSON | `results/daphnet_trunk_permutation.json` | ~6.8 KB | `43c33503e0851dec797ffa9bc918005efd8e2df693dd28049e9b6a3803b0e444` |
+| Final 1,000-permutation JSON | `results/daphnet_trunk_permutation.json` | ~56 KB | `252ec7cd8cd908c73d4b964633e4d92d04de0252053eb62cbb6870cd15724da9` |
 
 ## Committed Aggregate-Only Figures
 
@@ -51,29 +51,19 @@ aggregate metrics and no raw or participant-level sensor records.
 | `docs/figures/daphnet_loso_benchmark.svg` | `results/daphnet_trunk_loso_benchmark.json` |
 | `docs/figures/daphnet_permutation_null.svg` | `results/daphnet_trunk_permutation.json` |
 
-## Current Permutation Status
+## Final Permutation Status
 
-The committed permutation report currently documents the fast CPU run:
-`100` permutations with `10` random-forest estimators.
+The committed permutation report documents the final local run:
+`1,000` within-subject permutations with `50` random-forest estimators.
 
-A final local rerun is being performed separately with:
+Final aggregate results:
 
-```bash
-python scripts/permutation_test.py \
-  --input data/processed/daphnet_trunk.csv \
-  --output results/daphnet_trunk_permutation_1000.json \
-  --sampling-rate 64 \
-  --window-size 128 \
-  --overlap 0.5 \
-  --folds 3 \
-  --n-permutations 1000 \
-  --random-seed 42 \
-  --random-forest-estimators 50
+| Model | Observed AUROC | Null mean | Null std | n_perms | p-value |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Logistic regression | 0.7221 | 0.5215 | 0.0122 | 1,000 | 0.000999 |
+| Random forest | 0.7845 | 0.4471 | 0.0153 | 1,000 | 0.000999 |
 
-```
-
-After that run completes, update:
-- `docs/daphnet_permutation_report.md`
-- `docs/figures/daphnet_permutation_null.svg`
-- this manifest section
-
+The p-value equals `1 / 1001`, the minimum non-zero value available under the
+conservative Phipson & Smyth estimator for 1,000 permutations. The corresponding
+JSON remains ignored by Git; only aggregate values and the aggregate-only SVG are
+committed.
