@@ -96,9 +96,7 @@ def load_csv(path: str | Path, schema: DataSchema) -> SensorDataset:
         _validate_header(reader.fieldnames, schema)
 
         for line_number, row in enumerate(reader, start=2):
-            subject_ids.append(
-                _read_subject_id(row.get(schema.subject_id_column), line_number)
-            )
+            subject_ids.append(_read_subject_id(row.get(schema.subject_id_column), line_number))
             labels.append(
                 _read_label(row.get(schema.label_column), schema.allowed_labels, line_number)
             )

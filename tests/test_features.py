@@ -15,8 +15,7 @@ SCHEMA = DataSchema(
 
 def _make_windowed(windows, subject_ids=None, labels=None, window_size=None):
     normalized_windows = tuple(
-        tuple(tuple(float(value) for value in sample) for sample in window)
-        for window in windows
+        tuple(tuple(float(value) for value in sample) for sample in window) for window in windows
     )
     size = window_size if window_size is not None else len(normalized_windows[0])
     count = len(normalized_windows)
@@ -62,9 +61,7 @@ def test_extract_features_has_stable_shape_names_and_metadata():
 
 
 def test_extract_features_computes_statistics_energy_and_rolling_variance():
-    dataset = _make_windowed(
-        [((0, 0, 0), (1, 0, 0), (2, 0, 0), (3, 0, 0))]
-    )
+    dataset = _make_windowed([((0, 0, 0), (1, 0, 0), (2, 0, 0), (3, 0, 0))])
 
     extracted = extract_features(dataset, sampling_rate_hz=4, rolling_window_size=2)
     features = _feature_map(extracted)
@@ -79,9 +76,7 @@ def test_extract_features_computes_statistics_energy_and_rolling_variance():
 
 
 def test_extract_features_uses_euclidean_acceleration_magnitude():
-    dataset = _make_windowed(
-        [((3, 4, 0), (-3, 4, 0), (0, 0, 0), (0, 0, 0))]
-    )
+    dataset = _make_windowed([((3, 4, 0), (-3, 4, 0), (0, 0, 0), (0, 0, 0))])
 
     features = _feature_map(extract_features(dataset, sampling_rate_hz=4))
 
@@ -91,9 +86,7 @@ def test_extract_features_uses_euclidean_acceleration_magnitude():
 
 
 def test_extract_features_finds_axis_and_magnitude_dominant_frequency():
-    dataset = _make_windowed(
-        [((0, 0, 0), (1, 0, 0), (0, 0, 0), (-1, 0, 0))]
-    )
+    dataset = _make_windowed([((0, 0, 0), (1, 0, 0), (0, 0, 0), (-1, 0, 0))])
 
     features = _feature_map(extract_features(dataset, sampling_rate_hz=4))
 
@@ -116,19 +109,13 @@ def test_extract_features_handles_partial_and_all_nan_signals():
     assert first["acc_x__mean"] == 3.0
     assert first["acc_y__mean"] == 2.0
     assert first["acc_z__mean"] == 0.0
-    assert all(
-        value == 0.0
-        for name, value in first.items()
-        if name.startswith("magnitude__")
-    )
+    assert all(value == 0.0 for name, value in first.items() if name.startswith("magnitude__"))
     assert all(math.isfinite(value) for row in extracted.features for value in row)
     assert all(value == 0.0 for value in extracted.features[1])
 
 
 def test_extract_features_is_deterministic():
-    dataset = _make_windowed(
-        [((0.5, 1, 2), (1.5, 2, 3), (0.5, 3, 4), (-0.5, 4, 5))]
-    )
+    dataset = _make_windowed([((0.5, 1, 2), (1.5, 2, 3), (0.5, 3, 4), (-0.5, 4, 5))])
 
     first = extract_features(dataset, sampling_rate_hz=50, rolling_window_size=3)
     second = extract_features(dataset, sampling_rate_hz=50, rolling_window_size=3)

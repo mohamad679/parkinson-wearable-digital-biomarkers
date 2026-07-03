@@ -1,7 +1,7 @@
 """Regression tests for committed SVG figures."""
 
-from pathlib import Path
 import xml.etree.ElementTree as ET
+from pathlib import Path
 
 
 def test_committed_svg_figures_are_valid_xml() -> None:

@@ -235,7 +235,6 @@ def test_aggregate_fold_metrics_skips_non_numeric_keys():
 # ── Permutation test ──────────────────────────────────────────────────────────
 
 
-
 def test_permutation_test_produces_null_distribution_synthetic(tmp_path):
     """Full pipeline permutation test on synthetic CSV -- validates JSON structure."""
     import csv as _csv
@@ -290,8 +289,6 @@ def test_permutation_test_produces_null_distribution_synthetic(tmp_path):
         assert 0.0 <= model_data["observed_auroc"] <= 1.0
         assert 0.0 <= model_data["p_value"] <= 1.0
         assert model_data["n_permutations"] == n_perms
-
-
 
 
 def test_permutation_within_subject_shuffle_preserves_class_counts():

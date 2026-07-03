@@ -138,9 +138,7 @@ def _run_from_csv(
 
     _VALID_STRATEGIES = ("groupkfold", "loso")
     if validation not in _VALID_STRATEGIES:
-        raise ValueError(
-            f"validation must be one of {_VALID_STRATEGIES!r}, got {validation!r}"
-        )
+        raise ValueError(f"validation must be one of {_VALID_STRATEGIES!r}, got {validation!r}")
 
     schema = DataSchema(
         accelerometer_columns=accelerometer_columns,
@@ -186,9 +184,7 @@ def _run_from_csv(
             # Derive the unique test-subject ID(s) for this fold.
             unique_subjects = sorted(set(prediction.subject_ids))
             subject_label = (
-                unique_subjects[0]
-                if len(unique_subjects) == 1
-                else ",".join(unique_subjects)
+                unique_subjects[0] if len(unique_subjects) == 1 else ",".join(unique_subjects)
             )
 
             fold_record: dict[str, Any] = {
@@ -216,13 +212,15 @@ def _run_from_csv(
             per_fold_records.append(fold_record)
 
         # ── Aggregate across folds ──────────────────────────────────────────
-        numeric_fold_records = [
-            r for r in per_fold_records if "error" not in r
-        ]
+        numeric_fold_records = [r for r in per_fold_records if "error" not in r]
         scalar_keys = ["auroc", "auprc", "brier_score", "expected_calibration_error"]
-        aggregate = aggregate_fold_metrics(
-            [{k: r[k] for k in scalar_keys if k in r} for r in numeric_fold_records]
-        ) if numeric_fold_records else {"n_folds": 0}
+        aggregate = (
+            aggregate_fold_metrics(
+                [{k: r[k] for k in scalar_keys if k in r} for r in numeric_fold_records]
+            )
+            if numeric_fold_records
+            else {"n_folds": 0}
+        )
 
         # ── Whole-dataset calibration curve (kept for backward compat) ──────
         all_labels = tuple(label for p in fold_predictions for label in p.labels)
@@ -297,17 +295,13 @@ def _serialize_threshold_result(result: Any) -> dict[str, Any]:
 
 
 def _build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(
-        description="Run deterministic subject-aware baselines."
-    )
+    parser = argparse.ArgumentParser(description="Run deterministic subject-aware baselines.")
     source = parser.add_mutually_exclusive_group()
     source.add_argument("--input", type=Path, help="Input accelerometer CSV.")
     source.add_argument(
         "--synthetic", action="store_true", help="Use generated synthetic toy data."
     )
-    parser.add_argument(
-        "--output", type=Path, default=Path("results/synthetic_benchmark.json")
-    )
+    parser.add_argument("--output", type=Path, default=Path("results/synthetic_benchmark.json"))
     parser.add_argument("--subjects", type=int, default=6)
     parser.add_argument("--samples-per-subject", type=int, default=80)
     parser.add_argument("--event-segment-size", type=int, default=20)
@@ -325,9 +319,7 @@ def _build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--random-forest-estimators", type=int, default=50)
     parser.add_argument("--thresholds", type=float, nargs="+", default=[0.3, 0.5, 0.7])
     parser.add_argument("--calibration-bins", type=int, default=5)
-    parser.add_argument(
-        "--accelerometer-columns", nargs="+", default=["acc_x", "acc_y", "acc_z"]
-    )
+    parser.add_argument("--accelerometer-columns", nargs="+", default=["acc_x", "acc_y", "acc_z"])
     parser.add_argument("--subject-id-column", default="subject_id")
     parser.add_argument("--label-column", default="label")
     return parser

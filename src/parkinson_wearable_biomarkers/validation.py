@@ -123,9 +123,7 @@ def _build_fold(
     test_subjects: set[str],
 ) -> SubjectFold:
     test_indices = tuple(
-        index
-        for index, subject_id in enumerate(dataset.subject_ids)
-        if subject_id in test_subjects
+        index for index, subject_id in enumerate(dataset.subject_ids) if subject_id in test_subjects
     )
     train_indices = tuple(
         index
@@ -155,8 +153,7 @@ def _validate_subject_count(subject_count: int, required_splits: int) -> None:
         raise SubjectSplitError("Subject-aware splitting requires at least 2 unique subjects")
     if required_splits > subject_count:
         raise SubjectSplitError(
-            f"Number of folds ({required_splits}) cannot exceed unique subjects "
-            f"({subject_count})"
+            f"Number of folds ({required_splits}) cannot exceed unique subjects ({subject_count})"
         )
 
 
@@ -171,9 +168,7 @@ def _validate_indices(
             raise SubjectSplitError(f"{split_name} indices must be integers")
         normalized_index = int(index)
         if not 0 <= normalized_index < row_count:
-            raise SubjectSplitError(
-                f"{split_name} index {normalized_index} is outside the dataset"
-            )
+            raise SubjectSplitError(f"{split_name} index {normalized_index} is outside the dataset")
         normalized.append(normalized_index)
 
     if len(set(normalized)) != len(normalized):
