@@ -71,6 +71,8 @@ That imbalance is why AUPRC is emphasized alongside AUROC.
 | Logistic regression | 0.6985 | 0.1856 | 0.2195 | 0.3280 |
 | Random forest | 0.7845 | 0.2304 | 0.0951 | 0.0627 |
 
+> **Citation note:** Treat random forest as the primary reported baseline in this milestone. Logistic-regression values in this reference report are retained as secondary exploratory outputs only; do not cite a specific LR AUROC externally until the follow-up solver-level reproducibility audit is completed.
+
 The Brier score and ECE summarize probability calibration on this evaluation; they do
 not turn model scores into validated individual risk estimates. ECE also depends on the
 chosen bins and sample distribution.

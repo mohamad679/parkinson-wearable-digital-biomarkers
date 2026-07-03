@@ -140,6 +140,8 @@ The Daphnet documentation set includes research-only, non-clinical reports plus 
 | [docs/daphnet_leakage_ablation.md](docs/daphnet_leakage_ablation.md) | Leaky vs. honest split ablation — measured AUROC inflation from naive splitting |
 | [docs/daphnet_artifact_manifest.md](docs/daphnet_artifact_manifest.md) | Local ignored artifact hashes, provenance, and reproducibility boundary |
 
+**Citation guidance:** Use the random-forest Daphnet trunk result as the primary reported baseline for this milestone. Logistic-regression values are retained as secondary exploratory baselines and should not be used as headline or external citation values until a follow-up solver-level reproducibility audit reconciles their small run-to-run numerical variation.
+
 The benchmark reports are research-only reproducibility results, not clinical evidence or clinically
 validated FoG detectors. The artifact manifest documents local ignored inputs and outputs only.
 
@@ -242,7 +244,8 @@ analysis, longitudinal reliability, and assessment in the intended context of us
 │   ├── daphnet_real_data_report.md   # 3-fold GroupKFold reference estimate
 │   ├── daphnet_loso_report.md        # LOSO per-subject breakdown
 │   ├── daphnet_permutation_report.md # Permutation significance test
-│   └── daphnet_leakage_ablation.md   # Leaky vs. honest split ablation
+│   ├── daphnet_leakage_ablation.md   # Leaky vs. honest split ablation
+│   └── daphnet_artifact_manifest.md  # Ignored artifact hashes and provenance
 ├── results/
 │   └── benchmark_report.md           # Reusable reporting template
 ├── MODEL_CARD.md                     # Intended use and model limitations

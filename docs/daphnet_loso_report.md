@@ -42,6 +42,8 @@ be reported across folds.
 > this size reflects both model sensitivity and the heterogeneity of individual
 > freezing patterns.
 
+> **Citation note:** Use the random-forest LOSO summary as the primary reported validation result. Logistic-regression LOSO values are secondary exploratory baselines and should not be used as headline values until the LR reproducibility audit is completed.
+
 ## Exact Local Benchmark Configuration
 
 | Setting | Value |

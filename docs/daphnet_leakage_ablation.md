@@ -9,6 +9,8 @@
 > **The "Leaky" rows in this document are shown only to demonstrate the risk of
 > naive splitting. They must never be cited as this project's benchmark result.**
 
+> **Citation note:** The random-forest leakage inflation is the clearest demonstration in this ablation. Logistic-regression rows are retained for completeness but are not headline benchmark values.
+
 ## Purpose
 
 The project README warns that randomly splitting windows into train and test
