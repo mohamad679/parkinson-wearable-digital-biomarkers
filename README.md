@@ -135,7 +135,7 @@ Four research-only, non-clinical reports document the preliminary trunk/hip-sens
 | Report | Contents |
 |---|---|
 | [docs/daphnet_real_data_report.md](docs/daphnet_real_data_report.md) | Original 3-fold GroupKFold point estimate (reference baseline) |
-| [docs/daphnet_loso_report.md](docs/daphnet_loso_report.md) | Leave-One-Subject-Out breakdown — mean ± std across 10 subjects |
+| [docs/daphnet_loso_report.md](docs/daphnet_loso_report.md) | Leave-One-Subject-Out breakdown — mean ± SD over evaluable subjects |
 | [docs/daphnet_permutation_report.md](docs/daphnet_permutation_report.md) | Within-subject permutation test — empirical p-value for the observed AUROC |
 | [docs/daphnet_leakage_ablation.md](docs/daphnet_leakage_ablation.md) | Leaky vs. honest split ablation — measured AUROC inflation from naive splitting |
 
