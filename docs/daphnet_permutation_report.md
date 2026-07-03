@@ -80,6 +80,8 @@ permutations fall below the observed score.
 | Logistic regression | 0.7221 | 0.5215 | 0.0122 | 1,000 | **0.000999** |
 | Random forest | 0.7845 | 0.4471 | 0.0153 | 1,000 | **0.000999** |
 
+> **Citation note:** The random-forest permutation result is the primary significance result for this milestone. The logistic-regression row is retained for transparency but should not be used as a headline or external citation value until LR solver-level reproducibility is reconciled.
+
 _p = 0.000999 = 1/1,001 is the minimum achievable with 1,000 permutations under
 the Phipson & Smyth (2010) estimator. Zero permutations exceeded the observed
 AUROC for either model._

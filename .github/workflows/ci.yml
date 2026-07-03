@@ -32,5 +32,8 @@ jobs:
       - name: Run lint checks
         run: python -m ruff check .
 
+      - name: Run format checks
+        run: python -m ruff format --check .
+
       - name: Run smoke test
         run: python scripts/smoke_test.py
