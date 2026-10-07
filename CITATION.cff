@@ -1,0 +1,35 @@
+cff-version: 1.2.0
+title: Parkinson Wearable Digital Biomarkers
+message: "If you use this software in research, please cite it using these metadata."
+authors:
+  - family-names: Mohamad
+    given-names: "679"
+    affiliation: "GitHub"
+repository-code: "https://github.com/mohamad679/parkinson-wearable-digital-biomarkers"
+license: MIT
+date-released: 2026-06-29
+version: "0.1.0"
+abstract: |
+  A reproducible research baseline for detecting freezing-of-gait (FoG) events 
+  from wearable accelerometer time-series. Implements subject-aware validation, 
+  class-weighted models, discrimination metrics, and probability calibration 
+  for candidate digital biomarkers in Parkinson's disease research.
+keywords:
+  - parkinson-disease
+  - freezing-of-gait
+  - wearable-sensors
+  - accelerometer
+  - digital-biomarkers
+  - machine-learning
+  - subject-aware-validation
+  - reproducible-research
+references:
+  - type: dataset
+    title: "Daphnet Freezing of Gait Dataset"
+    authors:
+      - family-names: Bachlin
+        given-names: M
+      - family-names: Roggen
+        given-names: D
+    year: 2010
+    url: "http://www.tcts.ifp.uiuc.edu/~Dancing/Data_Sharing_WISDM.html"
